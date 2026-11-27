@@ -514,9 +514,9 @@
                 <option value="ai">AI-illustration</option>
                 <option value="catalog">Originalomslag från katalog / tillåten bildkälla</option>
             </select>
-            <p class="muted" style="margin:5px 0">Appen visar en unik illustrerad platshållarbild för varje nummer som
-                saknar eget omslag. Den är inte det verkliga originalomslaget. Du kan ersätta dem med ett eget foto
-                eller en tillåten originalbild.</p>
+            <p class="muted" style="margin:5px 0">Appen visar en unik illustrerad platshållarbild för varje nummer. Den
+                är inte det verkliga originalomslaget. Du kan ersätta dem med ett eget foto eller en tillåten
+                originalbild.</p>
             <label for="imageFile">Ladda upp bild (foto eller AI-illustration)</label><input class="field"
                 id="imageFile" type="file" accept="image/*">
             <label for="imageUrl">Eller ange bildlänk</label><input class="field" id="imageUrl" type="url"
@@ -550,11 +550,11 @@
                 $('yearGrid').innerHTML = years.map(y => { const o = ownedInYear(y), c = issueCount(y); return `<button class="year-btn ${y === year ? 'selected' : ''}" data-year="${y}"><strong>${y}</strong><small>${o}/${c} nr</small></button>`; }).join('');
             }
             function catalogCoverUrl(y, n) {
-                // Visa inte en påhittad bild som om den hörde till ett verkligt nummer.
-                return null;
+                // Unik illustrerad platshållare. Den är inte ett verifierat originalomslag.
+                return `covers/${y}-${String(n).padStart(2, '0')}.svg`;
             }
             function imageKindLabel(d) {
-                if (!d.image) return 'Omslagsbild saknas – ej verifierad';
+                if (!d.image) return 'Illustrerad platshållare – ej originalomslag';
                 return d.imageKind === 'ai' ? 'AI-illustration' : d.imageKind === 'catalog' ? 'Originalomslag' : 'Eget foto';
             }
             function renderIssues() {
@@ -562,7 +562,7 @@
                 $('yearTitle').textContent = year; $('yearCount').textContent = `${o} / ${count}`; $('yearBar').style.width = (o / count * 100) + '%';
                 $('yearMeta').textContent = yearIsVerified(year) ? `${count} utgivna nummer enligt Seriesams Guide (kontrollerad årgång).` : `${count} preliminära poster. Den här årgången behöver kontrolleras mot Seriekatalogen innan registret kan betraktas som komplett.`;
                 const nums = Array.from({ length: count }, (_, i) => i + 1).filter(n => filter === 'all' || (filter === 'owned' ? isOwned(year, n) : !isOwned(year, n)));
-                $('issues').innerHTML = nums.map(n => { const d = record(year, n), cover = d.image || catalogCoverUrl(year, n), isPlaceholder = !d.image; return `<article class="issue ${d.owned ? 'owned' : ''}"><div class="issue-head"><label><input type="checkbox" data-check="${n}" ${d.owned ? 'checked' : ''}> Nummer ${n}</label><button class="btn" data-edit="${n}">Redigera</button></div><div class="issue-body">${cover ? `<img class="cover" src="${esc(cover)}" alt="Omslag Bamse ${year} nummer ${n}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="cover" style="display:none" aria-label="Omslagsbild saknas">📖</div>` : '<div class="cover" aria-label="Omslagsbild saknas">📖</div>'}<div class="issue-info"><div>${d.owned ? '✓ I min samling' : 'Saknas i samlingen'}</div><div class="condition">${esc(d.condition || 'Skick ej bedömt')}</div><div class="muted">${d.notes ? 'Anteckning finns' : 'Ingen anteckning'}</div><span class="image-kind">${esc(imageKindLabel(d))}${isPlaceholder ? ' · eget tillagt omslag' : ''}</span></div></div></article>`; }).join('') || '<p class="muted">Inga nummer i den här vyn.</p>';
+                $('issues').innerHTML = nums.map(n => { const d = record(year, n), cover = d.image || catalogCoverUrl(year, n), isPlaceholder = !d.image; return `<article class="issue ${d.owned ? 'owned' : ''}"><div class="issue-head"><label><input type="checkbox" data-check="${n}" ${d.owned ? 'checked' : ''}> Nummer ${n}</label><button class="btn" data-edit="${n}">Redigera</button></div><div class="issue-body">${cover ? `<img class="cover" src="${esc(cover)}" alt="Omslag Bamse ${year} nummer ${n}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="cover" style="display:none" aria-label="Omslagsbild saknas">📖</div>` : '<div class="cover" aria-label="Omslagsbild saknas">📖</div>'}<div class="issue-info"><div>${d.owned ? '✓ I min samling' : 'Saknas i samlingen'}</div><div class="condition">${esc(d.condition || 'Skick ej bedömt')}</div><div class="muted">${d.notes ? 'Anteckning finns' : 'Ingen anteckning'}</div><span class="image-kind">${esc(imageKindLabel(d))}${isPlaceholder ? ' · illustration' : ''}</span></div></div></article>`; }).join('') || '<p class="muted">Inga nummer i den här vyn.</p>';
             }
             function renderReport() {
                 const mode = $('listFilter').value; let owned = 0, missing = 0;

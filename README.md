@@ -12,3 +12,6 @@ Ersätt `index.html` i GitHub-repot med filen i denna ZIP och behåll `README.md
 
 ## Viktigt om datan
 Årtalen 1973–1998 är markerade som kontrollerade i den här versionen. 1999–2026 är fortfarande preliminära och behöver verifieras mot katalog innan registret kan betraktas som komplett. Appen använder lokal lagring i webbläsaren. Exportera regelbundet en JSON-säkerhetskopia.
+
+
+Omslagsbilder: mappen `covers/` innehåller unika dekorativa SVG-illustrationer för nummerplatserna. De är platshållare, inte verifierade eller officiella Bamse-omslag. Bilden kan ersättas med eget foto eller bild som får användas.
