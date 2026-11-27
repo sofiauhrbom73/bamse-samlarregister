@@ -1,475 +1,154 @@
 <!doctype html>
 <html lang="sv">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="#f5e8c9">
-    <title>Bamse – mitt samlarregister</title>
-    <style>
-        :root {
-            --bg: #fbf8f0;
-            --paper: #fffdf8;
-            --ink: #30291f;
-            --muted: #766d60;
-            --line: #e7ddca;
-            --red: #b7352d;
-            --gold: #e4b94f;
-            --green: #477a50;
-            --soft: #f3ead8
-        }
-
-        * {
-            box-sizing: border-box
-        }
-
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--ink);
-            font: 16px/1.45 system-ui, -apple-system, Segoe UI, sans-serif
-        }
-
-        header {
-            background: #f3e3bd;
-            border-bottom: 1px solid #e2d1a8;
-            padding: 22px 16px
-        }
-
-        .wrap {
-            max-width: 1050px;
-            margin: auto;
-            padding: 0 16px
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 14px
-        }
-
-        .bear {
-            font-size: 42px
-        }
-
-        .brand h1 {
-            font-size: clamp(22px, 4vw, 32px);
-            margin: 0
-        }
-
-        .brand p {
-            margin: 3px 0 0;
-            color: #675b47
-        }
-
-        main {
-            padding: 22px 0 48px
-        }
-
-        .panel {
-            background: var(--paper);
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 8px #60451a0a
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px
-        }
-
-        .stat strong {
-            display: block;
-            font-size: 25px
-        }
-
-        .stat span {
-            font-size: 12px;
-            color: var(--muted)
-        }
-
-        .progress {
-            height: 10px;
-            background: var(--soft);
-            border-radius: 20px;
-            overflow: hidden;
-            margin: 12px 0
-        }
-
-        .progress div {
-            height: 100%;
-            background: var(--green);
-            width: 0
-        }
-
-        .toolbar {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap
-        }
-
-        .toolbar select,
-        .toolbar input,
-        .field,
-        textarea {
-            font: inherit;
-            border: 1px solid var(--line);
-            border-radius: 9px;
-            padding: 9px;
-            background: white;
-            color: var(--ink)
-        }
-
-        .toolbar select {
-            flex: 1;
-            min-width: 180px
-        }
-
-        .btn {
-            border: 1px solid var(--line);
-            border-radius: 9px;
-            background: white;
-            padding: 9px 12px;
-            color: var(--ink);
-            cursor: pointer;
-            font: inherit
-        }
-
-        .btn.primary {
-            background: var(--red);
-            border-color: var(--red);
-            color: white
-        }
-
-        .btn:focus-visible,
-        input:focus-visible,
-        select:focus-visible,
-        textarea:focus-visible {
-            outline: 3px solid #e4b94f;
-            outline-offset: 2px
-        }
-
-        .muted {
-            color: var(--muted);
-            font-size: 13px
-        }
-
-        .issue-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
-            gap: 10px
-        }
-
-        .issue {
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 12px;
-            background: white
-        }
-
-        .issue.owned {
-            border-color: #80a786;
-            background: #fbfff9
-        }
-
-        .issue-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px
-        }
-
-        .issue-head label {
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 9px
-        }
-
-        .issue input[type=checkbox] {
-            width: 19px;
-            height: 19px;
-            accent-color: var(--green)
-        }
-
-        .issue-body {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-            align-items: center
-        }
-
-        .cover {
-            width: 68px;
-            height: 90px;
-            object-fit: cover;
-            border: 1px solid var(--line);
-            border-radius: 5px;
-            background: var(--soft);
-            display: grid;
-            place-items: center;
-            color: #8c7b5e;
-            font-size: 26px;
-            flex: none
-        }
-
-        .issue-info {
-            min-width: 0;
-            font-size: 13px
-        }
-
-        .issue-info div {
-            margin: 3px 0
-        }
-
-        .condition {
-            font-weight: 600
-        }
-
-        .year-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-            gap: 7px
-        }
-
-        .year-btn {
-            border: 1px solid var(--line);
-            border-radius: 9px;
-            background: white;
-            padding: 8px;
-            text-align: left;
-            cursor: pointer
-        }
-
-        .year-btn.selected {
-            border-color: var(--red);
-            background: #fff3ef
-        }
-
-        .year-btn strong {
-            display: block
-        }
-
-        .year-btn small {
-            color: var(--muted)
-        }
-
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: #211b16a6;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            z-index: 5
-        }
-
-        .modal.open {
-            display: flex
-        }
-
-        .dialog {
-            background: var(--paper);
-            border-radius: 16px;
-            padding: 18px;
-            width: min(520px, 100%);
-            max-height: 90vh;
-            overflow: auto
-        }
-
-        .dialog label {
-            display: block;
-            font-size: 14px;
-            margin: 12px 0 5px
-        }
-
-        .dialog input[type=text],
-        .dialog input[type=url],
-        .dialog select,
-        .dialog textarea {
-            width: 100%
-        }
-
-        .dialog textarea {
-            min-height: 90px
-        }
-
-        .dialog-actions {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-            margin-top: 16px
-        }
-
-        footer {
-            font-size: 12px;
-            color: var(--muted);
-            text-align: center;
-            padding: 10px
-        }
-
-        @media(max-width:600px) {
-            .stats {
-                grid-template-columns: repeat(2, 1fr)
-            }
-
-            .toolbar .btn {
-                flex: 1
-            }
-
-            .panel {
-                padding: 13px
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5e8c9">
+<title>Bamse – mitt samlarregister</title>
+<style>
+:root{--bg:#fbf8f0;--paper:#fffdf8;--ink:#30291f;--muted:#766d60;--line:#e7ddca;--red:#b7352d;--gold:#e4b94f;--green:#477a50;--soft:#f3ead8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:#f3e3bd;border-bottom:1px solid #e2d1a8;padding:22px 16px}
+.wrap{max-width:1050px;margin:auto;padding:0 16px}
+.brand{display:flex;align-items:center;gap:14px}.bear{font-size:42px}.brand h1{font-size:clamp(22px,4vw,32px);margin:0}.brand p{margin:3px 0 0;color:#675b47}
+main{padding:22px 0 48px}.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px #60451a0a}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat strong{display:block;font-size:25px}.stat span{font-size:12px;color:var(--muted)}
+.progress{height:10px;background:var(--soft);border-radius:20px;overflow:hidden;margin:12px 0}.progress div{height:100%;background:var(--green);width:0}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.toolbar select,.toolbar input,.field,textarea{font:inherit;border:1px solid var(--line);border-radius:9px;padding:9px;background:white;color:var(--ink)}
+.toolbar select{flex:1;min-width:180px}.btn{border:1px solid var(--line);border-radius:9px;background:white;padding:9px 12px;color:var(--ink);cursor:pointer;font:inherit}.btn.primary{background:var(--red);border-color:var(--red);color:white}.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #e4b94f;outline-offset:2px}
+.muted{color:var(--muted);font-size:13px}.issue-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:10px}
+.issue{border:1px solid var(--line);border-radius:12px;padding:12px;background:white}.issue.owned{border-color:#80a786;background:#fbfff9}
+.issue-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.issue-head label{font-weight:700;display:flex;align-items:center;gap:9px}.issue input[type=checkbox]{width:19px;height:19px;accent-color:var(--green)}
+.issue-body{display:flex;gap:12px;margin-top:10px;align-items:center}.cover{width:68px;height:90px;object-fit:cover;border:1px solid var(--line);border-radius:5px;background:var(--soft);display:grid;place-items:center;color:#8c7b5e;font-size:26px;flex:none}
+.issue-info{min-width:0;font-size:13px}.issue-info div{margin:3px 0}.condition{font-weight:600}.image-kind{display:inline-block;margin-top:5px;padding:2px 7px;border-radius:20px;background:var(--soft);font-size:11px;color:var(--muted)}
+.year-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(75px,1fr));gap:7px}.year-btn{border:1px solid var(--line);border-radius:9px;background:white;padding:8px;text-align:left;cursor:pointer}.year-btn.selected{border-color:var(--red);background:#fff3ef}.year-btn strong{display:block}.year-btn small{color:var(--muted)}
+.modal{position:fixed;inset:0;background:#211b16a6;display:none;align-items:center;justify-content:center;padding:16px;z-index:5}.modal.open{display:flex}.dialog{background:var(--paper);border-radius:16px;padding:18px;width:min(520px,100%);max-height:90vh;overflow:auto}.dialog label{display:block;font-size:14px;margin:12px 0 5px}.dialog input[type=text],.dialog input[type=url],.dialog select,.dialog textarea{width:100%}.dialog textarea{min-height:90px}.dialog-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+footer{font-size:12px;color:var(--muted);text-align:center;padding:10px}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.toolbar .btn{flex:1}.panel{padding:13px}}
+</style>
 </head>
-
 <body>
-    <header>
-        <div class="wrap brand">
-            <div class="bear" aria-hidden="true">🐻</div>
-            <div>
-                <h1>Bamse – mitt samlarregister</h1>
-                <p>Håll koll på dina tidningar, årgång för årgång.</p>
-            </div>
-        </div>
-    </header>
-    <main class="wrap">
-        <section class="panel">
-            <div class="stats">
-                <div class="stat"><strong id="ownedTotal">0</strong><span>Tidningar i samlingen</span></div>
-                <div class="stat"><strong id="missingTotal">829</strong><span>Saknade nummer</span></div>
-                <div class="stat"><strong id="completeYears">0</strong><span>Kompletta årgångar</span></div>
-                <div class="stat"><strong id="completion">0 %</strong><span>Av planerade nummer</span></div>
-            </div>
-            <div class="progress">
-                <div id="overallBar"></div>
-            </div>
-            <p class="muted" id="overallText">0 av 829 nummer registrerade som ägda.</p>
-        </section>
-        <section class="panel">
-            <h2 style="margin:0 0 12px;font-size:19px">Välj årgång</h2>
-            <div class="toolbar">
-                <button class="btn" id="prevYear" aria-label="Föregående år">←</button>
-                <select id="yearSelect" aria-label="Välj år"></select>
-                <button class="btn" id="nextYear" aria-label="Nästa år">→</button>
-            </div>
-            <div style="display:flex;justify-content:space-between;margin-top:14px"><strong
-                    id="yearTitle">1973</strong><strong id="yearCount">0 / 12</strong></div>
-            <div class="progress">
-                <div id="yearBar"></div>
-            </div>
-            <p class="muted" id="yearMeta"></p>
-        </section>
-        <section class="panel">
-            <div class="toolbar" style="justify-content:space-between;margin-bottom:12px">
-                <h2 style="margin:0;font-size:19px">Tidningar</h2>
-                <select id="filter" aria-label="Filtrera tidningar" style="flex:0 1 170px">
-                    <option value="all">Visa alla</option>
-                    <option value="owned">Jag äger</option>
-                    <option value="missing">Saknas</option>
-                </select>
-            </div>
-            <div class="issue-grid" id="issues"></div>
-        </section>
-        <section class="panel">
-            <h2 style="font-size:19px;margin:0 0 10px">Årsöversikt</h2>
-            <p class="muted">Välj en årgång för att se eller registrera dess nummer.</p>
-            <div class="year-grid" id="yearGrid"></div>
-        </section>
-        <section class="panel">
-            <h2 style="font-size:19px;margin:0 0 8px">Säkerhetskopia</h2>
-            <p class="muted">Uppgifterna sparas i den här webbläsaren. Exportera en säkerhetskopia regelbundet.
-                Importera den om du byter webbläsare eller dator.</p>
-            <div class="toolbar"><button class="btn primary" id="exportBtn">Exportera register</button><button
-                    class="btn" id="importBtn">Importera register</button><input id="importFile" type="file"
-                    accept=".json,application/json" hidden></div>
-            <p class="muted" id="saveStatus" aria-live="polite">Lokal lagring är aktiverad.</p>
-        </section>
-        <footer>Privat samlarregister · Bamse-omslag kan läggas till när du har en bild och rätt att använda den.
-        </footer>
-    </main>
-    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="dialog">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-                <h2 id="modalTitle" style="margin:0;font-size:20px">Redigera tidning</h2><button class="btn"
-                    id="closeModal" aria-label="Stäng">✕</button>
-            </div>
-            <label><input type="checkbox" id="ownedCheck"> Jag äger den här tidningen</label>
-            <label for="condition">Skick</label><select class="field" id="condition">
-                <option value="">Ej bedömt</option>
-                <option>Nyskick</option>
-                <option>Mycket gott</option>
-                <option>Gott</option>
-                <option>Acceptabelt</option>
-                <option>Slitet</option>
-            </select>
-            <label for="notes">Anteckningar</label><textarea class="field" id="notes"
-                placeholder="Exempelvis skador, saknade sidor eller var du hittade tidningen."></textarea>
-            <label for="imageFile">Omslagsbild (ladda upp en bild)</label><input class="field" id="imageFile"
-                type="file" accept="image/*">
-            <label for="imageUrl">Eller bildlänk</label><input class="field" id="imageUrl" type="url"
-                placeholder="https://...">
-            <div id="imagePreview" style="margin-top:10px"></div>
-            <div class="dialog-actions"><button class="btn" id="removeImage">Ta bort bild</button><button
-                    class="btn primary" id="saveIssue">Spara</button></div>
-        </div>
-    </div>
-    <script>
-        (() => {
-            'use strict';
-            const $ = id => document.getElementById(id);
-            const years = Array.from({ length: 54 }, (_, i) => 1973 + i);
-            const issueCount = y => y <= 1994 ? 12 : y <= 1999 ? 13 : y <= 2019 ? 18 : 20;
-            const planned = years.reduce((s, y) => s + issueCount(y), 0);
-            const STORE = 'bamse-samlarregister-v1';
-            let records = {}, year = 1973, editing = null, imageData = null;
-            try { records = JSON.parse(localStorage.getItem(STORE) || '{}'); if (!records || Array.isArray(records) || typeof records !== 'object') records = {}; } catch { records = {}; }
-            const id = (y, n) => `${y}-${n}`, record = (y, n) => records[id(y, n)] || {};
-            const isOwned = (y, n) => !!record(y, n).owned;
-            const ownedInYear = y => Array.from({ length: issueCount(y) }, (_, i) => i + 1).filter(n => isOwned(y, n)).length;
-            const ownedTotal = () => years.reduce((s, y) => s + ownedInYear(y), 0);
-            const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-            function persist() { try { localStorage.setItem(STORE, JSON.stringify(records)); $('saveStatus').textContent = '✓ Sparat automatiskt i den här webbläsaren.'; } catch { $('saveStatus').textContent = 'Kunde inte spara. Exportera registret och kontrollera webbläsarens lagringsutrymme.'; } }
-            function renderStats() { const o = ownedTotal(), pct = Math.round(o / planned * 100); $('ownedTotal').textContent = o; $('missingTotal').textContent = planned - o; $('completeYears').textContent = years.filter(y => ownedInYear(y) === issueCount(y)).length; $('completion').textContent = pct + ' %'; $('overallBar').style.width = pct + '%'; $('overallText').textContent = `${o} av ${planned} planerade nummer registrerade som ägda.`; }
-            function renderYears() {
-                $('yearSelect').innerHTML = years.map(y => `<option value="${y}" ${y === year ? 'selected' : ''}>${y} (${issueCount(y)} nr)</option>`).join('');
-                $('yearGrid').innerHTML = years.map(y => { const o = ownedInYear(y), c = issueCount(y); return `<button class="year-btn ${y === year ? 'selected' : ''}" data-year="${y}"><strong>${y}</strong><small>${o}/${c} nr</small></button>`; }).join('');
-            }
-            function renderIssues() {
-                const count = issueCount(year), o = ownedInYear(year), filter = $('filter').value;
-                $('yearTitle').textContent = year; $('yearCount').textContent = `${o} / ${count}`; $('yearBar').style.width = (o / count * 100) + '%';
-                $('yearMeta').textContent = `${count} planerade nummer · ${year <= 1994 ? '12 nummer per år enligt startregistret' : year <= 1999 ? '13 nummer per år enligt startregistret' : year <= 2019 ? '18 nummer per år enligt startregistret' : '20 nummer per år enligt startregistret'}. Kontrollera gärna faktisk utgivning mot katalog.`;
-                const nums = Array.from({ length: count }, (_, i) => i + 1).filter(n => filter === 'all' || (filter === 'owned' ? isOwned(year, n) : !isOwned(year, n)));
-                $('issues').innerHTML = nums.map(n => { const d = record(year, n); return `<article class="issue ${d.owned ? 'owned' : ''}"><div class="issue-head"><label><input type="checkbox" data-check="${n}" ${d.owned ? 'checked' : ''}> Nummer ${n}</label><button class="btn" data-edit="${n}">Redigera</button></div><div class="issue-body">${d.image ? `<img class="cover" src="${esc(d.image)}" alt="Omslag Bamse ${year} nummer ${n}">` : '<div class="cover" aria-label="Ingen omslagsbild">📖</div>'}<div class="issue-info"><div>${d.owned ? '✓ I min samling' : 'Saknas i samlingen'}</div><div class="condition">${esc(d.condition || 'Skick ej bedömt')}</div><div class="muted">${d.notes ? 'Anteckning finns' : 'Ingen anteckning'}</div></div></div></article>`; }).join('') || '<p class="muted">Inga nummer i den här vyn.</p>';
-            }
-            function render() { renderStats(); renderYears(); renderIssues(); }
-            function openEditor(n) { editing = n; const d = record(year, n); imageData = d.image || null; $('modalTitle').textContent = `Bamse ${year} · Nummer ${n}`; $('ownedCheck').checked = !!d.owned; $('condition').value = d.condition || ''; $('notes').value = d.notes || ''; $('imageFile').value = ''; $('imageUrl').value = ''; showImage(); $('modal').classList.add('open'); }
-            function showImage() { const p = $('imagePreview'); p.innerHTML = imageData ? `<img src="${esc(imageData)}" alt="Förhandsvisning av omslag" style="max-width:120px;max-height:160px;object-fit:contain;border:1px solid var(--line);border-radius:6px">` : '<span class="muted">Ingen bild vald.</span>'; }
-            function closeEditor() { $('modal').classList.remove('open'); editing = null; }
-            $('yearSelect').addEventListener('change', e => { year = +e.target.value; render(); });
-            $('prevYear').onclick = () => { year = Math.max(1973, year - 1); render(); };
-            $('nextYear').onclick = () => { year = Math.min(2026, year + 1); render(); };
-            $('filter').onchange = renderIssues;
-            $('issues').addEventListener('change', e => { const n = +e.target.dataset.check; if (!n) return; records[id(year, n)] = { ...record(year, n), owned: e.target.checked }; persist(); render(); });
-            $('issues').addEventListener('click', e => { const b = e.target.closest('[data-edit]'); if (b) openEditor(+b.dataset.edit); });
-            $('yearGrid').addEventListener('click', e => { const b = e.target.closest('[data-year]'); if (b) { year = +b.dataset.year; render(); $('yearSelect').focus(); } });
-            $('closeModal').onclick = closeEditor; $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeEditor(); });
-            $('imageFile').onchange = e => { const f = e.target.files[0]; if (!f) return; if (!f.type.startsWith('image/')) return; if (f.size > 12 * 1024 * 1024) { alert('Bilden får vara högst 12 MB.'); return; } const r = new FileReader(); r.onload = () => { const img = new Image(); img.onload = () => { const scale = Math.min(1, 600 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); imageData = c.toDataURL('image/jpeg', .78); $('imageUrl').value = ''; showImage(); }; img.src = r.result; }; r.readAsDataURL(f); };
-            $('imageUrl').onchange = e => { if (e.target.value.trim()) { imageData = e.target.value.trim(); showImage(); } };
-            $('removeImage').onclick = () => { imageData = null; $('imageFile').value = ''; $('imageUrl').value = ''; showImage(); };
-            $('saveIssue').onclick = () => { if (editing === null) return; const old = record(year, editing), d = { ...old, owned: $('ownedCheck').checked, condition: $('condition').value, notes: $('notes').value.trim() }; if (imageData) d.image = imageData; else delete d.image; const k = id(year, editing); if (!d.owned && !d.condition && !d.notes && !d.image) delete records[k]; else records[k] = d; persist(); closeEditor(); render(); };
-            $('exportBtn').onclick = () => { const payload = { format: 'Bamse samlarregister', version: 1, exported: new Date().toISOString(), data: records }; const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = 'bamse-samlarregister-backup.json'; a.click(); URL.revokeObjectURL(url); };
-            $('importBtn').onclick = () => $('importFile').click();
-            $('importFile').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const obj = JSON.parse(await f.text()), incoming = obj.data || obj; if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) throw Error(); if (!confirm('Importera säkerhetskopian? Uppgifter med samma år och nummer ersätts.')) return; for (const [k, v] of Object.entries(incoming)) { if (/^(19[7-9]\d|20[0-2]\d)-(?:[1-9]|1\d|20)$/.test(k) && v && typeof v === 'object') records[k] = v; } persist(); render(); alert('Importen är klar.'); } catch { alert('Filen kunde inte läsas. Välj en exporterad Bamse-säkerhetskopia.'); } e.target.value = ''; };
-            render();
-        })();
-    </script>
+<header><div class="wrap brand"><div class="bear" aria-hidden="true">🐻</div><div><h1>Bamse – mitt samlarregister</h1><p>Håll koll på dina tidningar, årgång för årgång.</p></div></div></header>
+<main class="wrap">
+<section class="panel">
+ <div class="stats">
+  <div class="stat"><strong id="ownedTotal">0</strong><span>Tidningar i samlingen</span></div>
+  <div class="stat"><strong id="missingTotal">829</strong><span>Saknade nummer</span></div>
+  <div class="stat"><strong id="completeYears">0</strong><span>Kompletta årgångar</span></div>
+  <div class="stat"><strong id="completion">0 %</strong><span>Av preliminärt planerade nummer</span></div>
+ </div>
+ <div class="progress"><div id="overallBar"></div></div>
+ <p class="muted" id="overallText">0 av 829 nummer registrerade som ägda.</p>
+</section>
+<section class="panel">
+ <h2 style="margin:0 0 12px;font-size:19px">Välj årgång</h2>
+ <div class="toolbar">
+  <button class="btn" id="prevYear" aria-label="Föregående år">←</button>
+  <select id="yearSelect" aria-label="Välj år"></select>
+  <button class="btn" id="nextYear" aria-label="Nästa år">→</button>
+ </div>
+ <div style="display:flex;justify-content:space-between;margin-top:14px"><strong id="yearTitle">1973</strong><strong id="yearCount">0 / 12</strong></div>
+ <div class="progress"><div id="yearBar"></div></div>
+ <p class="muted" id="yearMeta"></p>
+</section>
+<section class="panel">
+ <div class="toolbar" style="justify-content:space-between;margin-bottom:12px">
+  <h2 style="margin:0;font-size:19px">Tidningar</h2>
+  <select id="filter" aria-label="Filtrera tidningar" style="flex:0 1 170px"><option value="all">Visa alla</option><option value="owned">Jag äger</option><option value="missing">Saknas</option></select>
+ </div>
+ <div class="issue-grid" id="issues"></div>
+</section>
+<section class="panel">
+ <h2 style="font-size:19px;margin:0 0 10px">Årsöversikt</h2>
+ <p class="muted">Välj en årgång för att se eller registrera dess nummer.</p>
+ <div class="year-grid" id="yearGrid"></div>
+</section>
+<section class="panel">
+ <h2 style="font-size:19px;margin:0 0 8px">Säkerhetskopia</h2>
+ <p class="muted">Uppgifterna sparas i den här webbläsaren. Exportera en säkerhetskopia regelbundet. Importera den om du byter webbläsare eller dator.</p>
+ <div class="toolbar"><button class="btn primary" id="exportBtn">Exportera register</button><button class="btn" id="importBtn">Importera register</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
+ <p class="muted" id="saveStatus" aria-live="polite">Lokal lagring är aktiverad.</p>
+</section>
+<footer>Privat samlarregister · AI-exempelbilderna är generella illustrationer och ska inte tolkas som respektive nummers originalomslag.</footer>
+</main>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <div class="dialog">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="modalTitle" style="margin:0;font-size:20px">Redigera tidning</h2><button class="btn" id="closeModal" aria-label="Stäng">✕</button></div>
+  <label><input type="checkbox" id="ownedCheck"> Jag äger den här tidningen</label>
+  <label for="condition">Skick</label><select class="field" id="condition"><option value="">Ej bedömt</option><option>Nyskick</option><option>Mycket gott</option><option>Gott</option><option>Acceptabelt</option><option>Slitet</option></select>
+  <label for="notes">Anteckningar</label><textarea class="field" id="notes" placeholder="Exempelvis skador, saknade sidor eller var du hittade tidningen."></textarea>
+  <label for="imageKind">Typ av omslagsbild</label>
+  <select class="field" id="imageKind">
+   <option value="own">Eget foto</option>
+   <option value="ai">AI-illustration</option>
+   <option value="catalog">Originalomslag från katalog / tillåten bildkälla</option>
+  </select>
+  <p class="muted" style="margin:5px 0">Appen visar AI-exempelbilder direkt för nummer som saknar eget omslag. De är generella illustrationer, inte det verkliga omslaget till numret. Du kan ersätta dem med ett eget foto eller en tillåten originalbild.</p>
+  <label for="imageFile">Ladda upp bild (foto eller AI-illustration)</label><input class="field" id="imageFile" type="file" accept="image/*">
+  <label for="imageUrl">Eller ange bildlänk</label><input class="field" id="imageUrl" type="url" placeholder="https://...">
+  <div id="imagePreview" style="margin-top:10px"></div>
+  <div class="dialog-actions"><button class="btn" id="removeImage">Ta bort bild</button><button class="btn primary" id="saveIssue">Spara</button></div>
+ </div>
+</div>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const years=Array.from({length:54},(_,i)=>1973+i);
+const issueCount=y=>y<=1994?12:y<=1999?13:y<=2019?18:20;
+const planned=years.reduce((s,y)=>s+issueCount(y),0);
+const STORE='bamse-samlarregister-v1';
+let records={},year=1973,editing=null,imageData=null;
+try{records=JSON.parse(localStorage.getItem(STORE)||'{}');if(!records||Array.isArray(records)||typeof records!=='object')records={};}catch{records={};}
+const id=(y,n)=>`${y}-${n}`,record=(y,n)=>records[id(y,n)]||{};
+const isOwned=(y,n)=>!!record(y,n).owned;
+const ownedInYear=y=>Array.from({length:issueCount(y)},(_,i)=>i+1).filter(n=>isOwned(y,n)).length;
+const ownedTotal=()=>years.reduce((s,y)=>s+ownedInYear(y),0);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function persist(){try{localStorage.setItem(STORE,JSON.stringify(records));$('saveStatus').textContent='✓ Sparat automatiskt i den här webbläsaren.';}catch{$('saveStatus').textContent='Kunde inte spara. Exportera registret och kontrollera webbläsarens lagringsutrymme.';}}
+function renderStats(){const o=ownedTotal(),pct=Math.round(o/planned*100);$('ownedTotal').textContent=o;$('missingTotal').textContent=planned-o;$('completeYears').textContent=years.filter(y=>ownedInYear(y)===issueCount(y)).length;$('completion').textContent=pct+' %';$('overallBar').style.width=pct+'%';$('overallText').textContent=`${o} av ${planned} preliminärt planerade nummer registrerade som ägda.`;}
+function renderYears(){
+ $('yearSelect').innerHTML=years.map(y=>`<option value="${y}" ${y===year?'selected':''}>${y} (${issueCount(y)} nr)</option>`).join('');
+ $('yearGrid').innerHTML=years.map(y=>{const o=ownedInYear(y),c=issueCount(y);return `<button class="year-btn ${y===year?'selected':''}" data-year="${y}"><strong>${y}</strong><small>${o}/${c} nr</small></button>`;}).join('');
+}
+function catalogCoverUrl(y,n){
+ // Generiska AI-exempelbilder som följer med appen. De är inte originalomslag.
+ const variants=3;
+ const index=((y*7+n*3)%variants)+1;
+ return `covers/ai-placeholder-${index}.webp`;
+}
+function imageKindLabel(d){
+ if(!d.image)return 'AI-exempelbild';
+ return d.imageKind==='ai'?'AI-illustration':d.imageKind==='catalog'?'Originalomslag':'Eget foto';
+}
+function renderIssues(){
+ const count=issueCount(year),o=ownedInYear(year),filter=$('filter').value;
+ $('yearTitle').textContent=year;$('yearCount').textContent=`${o} / ${count}`;$('yearBar').style.width=(o/count*100)+'%';
+ $('yearMeta').textContent=`${count} planerade nummer · ${year<=1994?'12 nummer per år enligt startregistret':year<=1999?'13 nummer per år enligt startregistret':year<=2019?'18 nummer per år enligt startregistret':'20 nummer per år enligt startregistret'}. Kontrollera gärna faktisk utgivning mot katalog.`;
+ const nums=Array.from({length:count},(_,i)=>i+1).filter(n=>filter==='all'||(filter==='owned'?isOwned(year,n):!isOwned(year,n)));
+ $('issues').innerHTML=nums.map(n=>{const d=record(year,n),cover=d.image||catalogCoverUrl(year,n),isPlaceholder=!d.image;return `<article class="issue ${d.owned?'owned':''}"><div class="issue-head"><label><input type="checkbox" data-check="${n}" ${d.owned?'checked':''}> Nummer ${n}</label><button class="btn" data-edit="${n}">Redigera</button></div><div class="issue-body">${cover?`<img class="cover" src="${esc(cover)}" alt="Omslag Bamse ${year} nummer ${n}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="cover" style="display:none" aria-label="Omslagsbild saknas">📖</div>`:'<div class="cover" aria-label="Omslagsbild saknas">📖</div>'}<div class="issue-info"><div>${d.owned?'✓ I min samling':'Saknas i samlingen'}</div><div class="condition">${esc(d.condition||'Skick ej bedömt')}</div><div class="muted">${d.notes?'Anteckning finns':'Ingen anteckning'}</div><span class="image-kind">${esc(imageKindLabel(d))}${isPlaceholder?' · ej original':''}</span></div></div></article>`;}).join('')||'<p class="muted">Inga nummer i den här vyn.</p>';
+}
+function render(){renderStats();renderYears();renderIssues();}
+function openEditor(n){editing=n;const d=record(year,n);imageData=d.image||null;$('modalTitle').textContent=`Bamse ${year} · Nummer ${n}`;$('ownedCheck').checked=!!d.owned;$('condition').value=d.condition||'';$('notes').value=d.notes||'';$('imageKind').value=d.imageKind||(d.image?'own':'own');$('imageFile').value='';$('imageUrl').value=d.image&&/^https?:/.test(d.image)?d.image:'';showImage();$('modal').classList.add('open');}
+function showImage(){const p=$('imagePreview');p.innerHTML=imageData?`<img src="${esc(imageData)}" alt="Förhandsvisning av omslag" style="max-width:120px;max-height:160px;object-fit:contain;border:1px solid var(--line);border-radius:6px">`:'<span class="muted">Ingen bild vald.</span>';}
+function closeEditor(){$('modal').classList.remove('open');editing=null;}
+$('yearSelect').addEventListener('change',e=>{year=+e.target.value;render();});
+$('prevYear').onclick=()=>{year=Math.max(1973,year-1);render();};
+$('nextYear').onclick=()=>{year=Math.min(2026,year+1);render();};
+$('filter').onchange=renderIssues;
+$('issues').addEventListener('change',e=>{const n=+e.target.dataset.check;if(!n)return;records[id(year,n)]={...record(year,n),owned:e.target.checked};persist();render();});
+$('issues').addEventListener('click',e=>{const b=e.target.closest('[data-edit]');if(b)openEditor(+b.dataset.edit);});
+$('yearGrid').addEventListener('click',e=>{const b=e.target.closest('[data-year]');if(b){year=+b.dataset.year;render();$('yearSelect').focus();}});
+$('closeModal').onclick=closeEditor;$('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeEditor();});
+$('imageFile').onchange=e=>{const f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/'))return;if(f.size>12*1024*1024){alert('Bilden får vara högst 12 MB.');return;}const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const scale=Math.min(1,600/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);imageData=c.toDataURL('image/jpeg',.78);$('imageUrl').value='';showImage();};img.src=r.result;};r.readAsDataURL(f);};
+$('imageUrl').onchange=e=>{if(e.target.value.trim()){imageData=e.target.value.trim();showImage();}};
+$('removeImage').onclick=()=>{imageData=null;$('imageFile').value='';$('imageUrl').value='';$('imageKind').value='own';showImage();};
+$('saveIssue').onclick=()=>{if(editing===null)return;const old=record(year,editing),d={...old,owned:$('ownedCheck').checked,condition:$('condition').value,notes:$('notes').value.trim()};if(imageData){d.image=imageData;d.imageKind=$('imageKind').value;}else{delete d.image;delete d.imageKind;}const k=id(year,editing);if(!d.owned&&!d.condition&&!d.notes&&!d.image)delete records[k];else records[k]=d;persist();closeEditor();render();};
+$('exportBtn').onclick=()=>{const payload={format:'Bamse samlarregister',version:1,exported:new Date().toISOString(),data:records};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='bamse-samlarregister-backup.json';a.click();URL.revokeObjectURL(url);};
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const obj=JSON.parse(await f.text()),incoming=obj.data||obj;if(!incoming||typeof incoming!=='object'||Array.isArray(incoming))throw Error();if(!confirm('Importera säkerhetskopian? Uppgifter med samma år och nummer ersätts.'))return;for(const [k,v] of Object.entries(incoming)){if(/^(19[7-9]\d|20[0-2]\d)-(?:[1-9]|1\d|20)$/.test(k)&&v&&typeof v==='object')records[k]=v;}persist();render();alert('Importen är klar.');}catch{alert('Filen kunde inte läsas. Välj en exporterad Bamse-säkerhetskopia.');}e.target.value='';};
+render();
+})();
+</script>
 </body>
-
 </html>
