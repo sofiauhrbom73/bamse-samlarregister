@@ -1,0 +1,1 @@
+den här appen ska innehålla ett register av mina samlade bamse-tidningar. Jag vill kunna kryssa i vilka tidningar jag har i min samling från 1973 fram till idag. med antal tidningar per år. 12 nr fram till 1994. då blev det 13 st per år. från millenieskiftet ökade det till 18 och nu 20 st/år. Hade även velat kunnat kryssa i skicket på tidningen bredvid.# bamse-samlarregister
